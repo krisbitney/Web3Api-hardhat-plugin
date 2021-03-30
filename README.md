@@ -1,15 +1,31 @@
-# hardhat-example-plugin
+# Web3API Hardhat Plugin
 
-_A one line description of the plugin_
+_A Hardhat plugin to manage and run your Web3API test environment_
 
-[Hardhat](https://hardhat.org) plugin example. 
+## Vision
 
-## What
+The Web3API Hardhat plugin facilitates simultaneous api and smart contract development using Hardhat (formerly Buidler, a popular smart contract development environment). The plugin automatically starts and stops the Web3API test environment in the background, and extends the Hardhat Runtime Environment to provide an instance of the Web3API client. The plugin streamlines development iterations by adding a web3api build and deploy step to Hardhat's smart contract compilation procedure--your newest api version will always be available while testing.
 
-<_A longer, one paragraph, description of the plugin_>
+(note that the plugin doesn't work yet)
 
-This plugin will help you with world domination by implementing a simple tic-tac-toe in the terminal.
+## Why
 
+- A good way to market web3api to web3 developer community
+  - Plugins are central to Hardhat
+  - Hardhat developers are likely to browse available plugins because some plugins are extremely useful
+  - There aren't many plugins listed on the Hardhat website, so quite a few developers would see the Web3API plugin even if it were listed last
+- Lets developers manage web3api test env and client in a familiar environment
+- Facilitates simultaneous contract and api development, encouraging developers to think about their api early on
+- Hardhat Tasks expose useful hooks:
+    - could automatically register/manage ENS for contracts when devs run "hardhat test"
+    - could integrate stack traces for debugging api alongside contracts
+    - could auto-generate a starter graphql schema and api interface based on contract abi and type artifacts produced by hardhat compiler
+    - ???
+    - profit
+
+# End of Readme
+#
+#
 ## Installation
 
 <_A step-by-step guide on how to install the plugin_>
