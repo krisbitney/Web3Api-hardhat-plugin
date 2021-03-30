@@ -12,6 +12,7 @@ import {
 import {createWeb3ApiClient, Web3ApiClient} from "@web3api/client-js";
 import {buildAndDeployApi, initTestEnvironment, runCLI, stopTestEnvironment} from "@web3api/test-env-js";
 
+
 interface Web3ApiExtension {
   providers: {
     ipfs: string;
