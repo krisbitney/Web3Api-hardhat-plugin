@@ -22,7 +22,7 @@ More importantly, Hardhat provides a suite of tools that make it easy for us to 
 A simple Web3API Hardhat plugin can add value to the SDLC by facilitating simultaneous contract and API development, encouraging developers to think about their API early on. Developers who love Hardhat can write their API, configure the Web3API test environment and client, and access the Web3API client in a familiar environment without changing their workflow.
 
 # End of Readme
-#
+# It's just placeholder text below this line!
 #
 ## Installation
 
