@@ -4,7 +4,7 @@ _A Hardhat plugin to manage and run your Web3API test environment_
 
 ## Vision
 
-The Web3API Hardhat plugin facilitates simultaneous api and smart contract development using Hardhat (formerly Buidler, a popular smart contract development environment). The plugin automatically starts and stops the Web3API test environment in the background, and extends the Hardhat Runtime Environment to provide an instance of the Web3API client. The plugin streamlines development iterations by adding a web3api build and deploy step to Hardhat's smart contract compilation procedure--your newest api version will always be available while testing.
+The Web3API Hardhat plugin facilitates simultaneous api and smart contract development using Hardhat (formerly Buidler, a popular smart contract development environment). The plugin automatically starts and stops the Web3API test environment in the background, and extends the Hardhat Runtime Environment to provide an instance of the Web3API client. It also streamlines development iterations by adding a web3api build and deploy step to Hardhat's smart contract compilation procedure--your newest api version will always be available while testing.
 
 (note that the plugin doesn't work yet)
 
