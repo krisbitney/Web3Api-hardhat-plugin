@@ -1,49 +1,87 @@
-import { extendConfig, extendEnvironment } from "hardhat/config";
-import { lazyObject } from "hardhat/plugins";
-import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
-import path from "path";
+import {
+  TASK_RUN,
+  TASK_TEST,
+} from "hardhat/builtin-tasks/task-names";
+import {extendConfig, extendEnvironment, task} from "hardhat/config";
+import {
+  EthereumProvider,
+  HardhatRuntimeEnvironment,
+  RunSuperFunction,
+  TaskArguments
+} from "hardhat/types";
+import {createWeb3ApiClient, Web3ApiClient} from "@web3api/client-js";
+import {buildAndDeployApi, initTestEnvironment, runCLI, stopTestEnvironment} from "@web3api/test-env-js";
 
-import { ExampleHardhatRuntimeEnvironmentField } from "./ExampleHardhatRuntimeEnvironmentField";
-// This import is needed to let the TypeScript compiler know that it should include your type
-// extensions in your npm package's types file.
-import "./type-extensions";
+interface Web3ApiExtension {
+  providers: {
+    ipfs: string;
+    ethereum: string | EthereumProvider;
+    ens: string;
+  };
+  client: Web3ApiClient;
+  buildAndDeploy: Function;
+  runCLI: Function;
+}
 
-extendConfig(
-  (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
-    // We apply our default config here. Any other kind of config resolution
-    // or normalization should be placed here.
-    //
-    // `config` is the resolved config, which will be used during runtime and
-    // you should modify.
-    // `userConfig` is the config as provided by the user. You should not modify
-    // it.
-    //
-    // If you extended the `HardhatConfig` type, you need to make sure that
-    // executing this function ensures that the `config` object is in a valid
-    // state for its type, including its extentions. For example, you may
-    // need to apply a default value, like in this example.
-    const userPath = userConfig.paths?.newPath;
+let client: Web3ApiClient;
+let ipfsProvider: string;
+let ethereumProvider: EthereumProvider | string;
+let ensAddress: string;
 
-    let newPath: string;
-    if (userPath === undefined) {
-      newPath = path.join(config.paths.root, "newPath");
-    } else {
-      if (path.isAbsolute(userPath)) {
-        newPath = userPath;
-      } else {
-        // We resolve relative paths starting from the project's root.
-        // Please keep this convention to avoid confusion.
-        newPath = path.normalize(path.join(config.paths.root, userPath));
-      }
-    }
+task(TASK_TEST, async (_args, hre, runSuper) => {
+  return handlePluginTask(hre, runSuper);
+});
 
-    config.paths.newPath = newPath;
+task(TASK_RUN, async (_args, hre, runSuper) => {
+  return handlePluginTask(hre, runSuper);
+});
+
+async function handlePluginTask(hre: HardhatRuntimeEnvironment, runSuper: RunSuperFunction<TaskArguments>) {
+  if (hre.network.name !== "web3api") {
+    return runSuper();
   }
-);
 
-extendEnvironment((hre) => {
-  // We add a field to the Hardhat Runtime Environment here.
-  // We use lazyObject to avoid initializing things until they are actually
-  // needed.
-  hre.example = lazyObject(() => new ExampleHardhatRuntimeEnvironmentField());
+  // TODO: can't run test env with Hardhat Network because can't host two servers -> need to run in another thread
+  // TODO: test env hangs -> need to run in another thread
+  const { ipfs, ethereum, ensAddress: ens } = await initTestEnvironment();
+  ipfsProvider = ipfs;
+  ethereumProvider = hre.network.provider ?? ethereum;
+  ensAddress = ens;
+
+  client = await createWeb3ApiClient({
+    ethereum: { provider: ethereumProvider },
+    ipfs: { provider: ipfsProvider },
+    ens: { address: ensAddress }
+  });
+
+  const ret = await runSuper();
+  await stopTestEnvironment();
+  return ret;
+}
+
+extendConfig((resolvedConfig: any, config: any) => {
+  // TODO: define default options and type interface
+  const defaultOptions = {};
+  if (config.networks && config.networks.web3api) {
+    const customOptions = config.networks.web3api;
+    resolvedConfig.networks.web3api = { ...defaultOptions, ...customOptions };
+  } else {
+    resolvedConfig.networks.web3api = defaultOptions;
+  }
+});
+
+extendEnvironment(hre => {
+  // TODO: what should be added when extending the hre?
+  const extension: Web3ApiExtension = {
+    providers: {
+      ipfs: ipfsProvider,
+      ethereum: ethereumProvider,
+      ens: ensAddress
+    },
+    client: client,
+    buildAndDeploy: buildAndDeployApi,
+    runCLI: runCLI,
+  }
+  // @ts-ignore
+  hre.web3api = extension
 });

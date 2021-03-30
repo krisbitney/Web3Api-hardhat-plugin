@@ -26,6 +26,19 @@
     "LICENSE",
     "README.md"
   ],
+  "dependencies": {
+    "debug": "^4.1.1",
+    "@web3api/client-js": "0.0.1-prealpha.8",
+    "@web3api/test-env-js": "0.0.1-prealpha.8",
+    "@web3api/client-test-env": "0.0.1-prealpha.8",
+    "@web3api/core-js": "0.0.1-prealpha.8",
+    "@web3api/ens-plugin-js": "0.0.1-prealpha.8",
+    "@web3api/ethereum-plugin-js": "0.0.1-prealpha.8",
+    "@web3api/ipfs-plugin-js": "0.0.1-prealpha.8",
+    "@web3api/schema-bind": "0.0.1-prealpha.8",
+    "@web3api/schema-compose": "0.0.1-prealpha.8",
+    "@web3api/schema-parse": "0.0.1-prealpha.8"
+  },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.4",
