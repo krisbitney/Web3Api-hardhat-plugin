@@ -1,18 +1,26 @@
 // tslint:disable-next-line no-implicit-dependencies
-import { assert } from "chai";
+import { assert, expect } from "chai";
 import { useEnvironment } from "./helpers";
 
 describe("Integration tests examples", function () {
   describe("Hardhat Runtime Environment extension", function () {
     useEnvironment("hardhat-project");
 
-    it("Should run Hardhat RUN task 'print-web3api-info.js' using Web3API test env", async function () {
+    it("Should run Hardhat RUN task 'web3api-config-exists.js'", async function () {
       await this.hre.run("run", {
         noCompile: true,
-        script: "scripts/print-web3api-info.js",
+        script: "scripts/web3api-config-exists.js",
       });
-
       assert.equal(process.exitCode, 0);
+    });
+
+    it("has extended HRE", async function () {
+      expect(this.hre.web3api.providers.ipfs).to.not.be.undefined;
+      expect(this.hre.web3api.providers.ethereum).to.not.be.undefined;
+      expect(this.hre.web3api.providers.ens).to.not.be.undefined;
+      expect(this.hre.web3api.client).to.not.be.undefined;
+      expect(this.hre.web3api.buildAndDeploy).to.not.be.undefined;
+      expect(this.hre.web3api.runCLI).to.not.be.undefined;
     });
 
   });

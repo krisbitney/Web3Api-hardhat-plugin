@@ -2,17 +2,22 @@
 import { HardhatUserConfig } from "hardhat/types";
 
 import "../../../src";
+import fs from "fs";
 
-// TODO: add custom configuration, like custom redirects etc.
+const alchemyKey = fs.readFileSync("./alchemyApiKey.txt", 'utf-8');
+
 const config: HardhatUserConfig = {
-  solidity: "0.7.3",
+  defaultNetwork: "hardhat",
   networks: {
-    hardhat: { },
-    web3api: {
-      url: "http://localhost:8545"
-    }
+    hardhat: {
+      chainId: 31337,
+      forking: {
+        url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyKey}`,
+        blockNumber: 12200882, // April 8, 2021 at 1:48pm CST
+        enabled: true
+      }
+    },
   },
-  defaultNetwork: "web3api",
 };
 
 export default config;
