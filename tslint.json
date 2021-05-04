@@ -4,8 +4,16 @@
     "tslint-plugin-prettier",
     "tslint-config-prettier"
   ],
+  "linterOptions": {
+    "exclude": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "test/fixture-projects/hardhat-project/simple-storage/**/*"
+    ]
+  },
   "rules": {
     "prettier": true,
+    "max-line-length": [true, 120],
     "object-literal-sort-keys": false,
     "no-submodule-imports": false,
     "interface-name": false,

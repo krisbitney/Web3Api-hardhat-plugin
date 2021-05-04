@@ -1,21 +1,21 @@
-import {
-  TASK_RUN,
-  TASK_TEST,
-} from "hardhat/builtin-tasks/task-names";
-import {extendConfig, extendEnvironment, task} from "hardhat/config";
+import { UriRedirect, Web3ApiClient } from "@web3api/client-js";
+import { ensPlugin } from "@web3api/ens-plugin-js";
+import { ethereumPlugin } from "@web3api/ethereum-plugin-js";
+import { ipfsPlugin } from "@web3api/ipfs-plugin-js";
+import { runCLI } from "@web3api/test-env-js";
+import { TASK_RUN, TASK_TEST } from "hardhat/builtin-tasks/task-names";
+import { extendConfig, extendEnvironment, task } from "hardhat/config";
 import {
   HardhatConfig,
-  HardhatRuntimeEnvironment, HardhatUserConfig,
+  HardhatRuntimeEnvironment,
+  HardhatUserConfig,
   RunSuperFunction,
-  TaskArguments
+  TaskArguments,
 } from "hardhat/types";
-import {createWeb3ApiClient, Web3ApiClient} from "@web3api/client-js";
-import {buildAndDeployApi, initTestEnvironment, runCLI, stopTestEnvironment} from "@web3api/test-env-js";
-import {defaultWeb3ApiConfig, Web3ApiConfig} from "./config";
-import {ExternalProvider} from "@web3api/client-js/build/pluginConfigs/Ethereum";
-import "./typeExtensions";
-import {getRedirects} from "./getRedirects";
 
+import { defaultWeb3ApiConfig, Web3ApiConfig } from "./config";
+import "./typeExtensions";
+import { buildAndDeployToIpfs } from "./utils";
 
 task(TASK_TEST, async (_args, hre, runSuper) => {
   return handlePluginTask(hre, runSuper);
@@ -25,78 +25,52 @@ task(TASK_RUN, async (_args, hre, runSuper) => {
   return handlePluginTask(hre, runSuper);
 });
 
-async function handlePluginTask(hre: HardhatRuntimeEnvironment, runSuper: RunSuperFunction<TaskArguments>) {
-  if (hre.network.name === "web3api") {
-    // copy config-based web3api data
-    const configIpfs = hre.web3api.providers.ipfs;
-    const configEthProv = hre.web3api.providers.ethereum;
-    const configEns = hre.web3api.providers.ens;
-    const configClient = hre.web3api.client;
-    // use test environment for task
-    // TODO: can't run test env with Hardhat Network because can't host two servers -> need to run in another thread
-    // TODO: test env hangs -> need to run in another thread
-    const { ipfs, ethereum, ensAddress } = await initTestEnvironment();
-    hre.web3api.providers.ipfs = ipfs;
-    hre.web3api.providers.ethereum = ethereum;
-    hre.web3api.providers.ens = ensAddress;
-    hre.web3api.client = await createWeb3ApiClient({
-      ipfs: { provider: ipfs },
-      ethereum: { provider: ethereum },
-      ens: { address: ensAddress }
-    });
-    const ret = await runSuper();
-    await stopTestEnvironment();
-    // re-apply config-based web3api data
-    hre.web3api.providers.ipfs = configIpfs;
-    hre.web3api.providers.ethereum = configEthProv;
-    hre.web3api.providers.ens = configEns;
-    hre.web3api.client = configClient;
-    return ret;
-  }
+async function handlePluginTask(
+  hre: HardhatRuntimeEnvironment,
+  runSuper: RunSuperFunction<TaskArguments>
+) {
+  // TODO: run a local ipfs/ens node here
   return runSuper();
 }
 
 // client options and general web3api config
-extendConfig((config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
-  const defaultClientConfig: Web3ApiConfig = defaultWeb3ApiConfig;
-  if (userConfig.web3api) {
-    const providers = userConfig.web3api.providers;
-    config.web3api = {
-      providers: {
-        ipfs: providers.ipfs ?? defaultClientConfig.providers.ipfs,
-        ethereum: providers.ethereum,
-        ens: providers.ens ?? defaultClientConfig.providers.ens,
-      }
+extendConfig(
+  (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
+    const defaultClientConfig: Web3ApiConfig = defaultWeb3ApiConfig;
+    if (userConfig.web3api) {
+      config.web3api = {
+        ipfs: userConfig.web3api.ipfs ?? defaultClientConfig.ipfs,
+        ens: userConfig.web3api.ens ?? defaultClientConfig.ens,
+        ethereum: userConfig.web3api.ethereum ?? defaultClientConfig.ethereum,
+      };
+    } else {
+      config.web3api = defaultClientConfig;
     }
-  } else {
-    config.web3api = defaultClientConfig;
   }
-});
+);
 
-extendEnvironment(hre => {
-  // get providers
-  const ipfsProvider = hre.config.web3api.providers.ipfs;
-  const ensProvider = hre.config.web3api.providers.ens;
-  const ethereumProvider = hre.config.web3api.providers.ethereum ?? hre.network.provider;
-  // get client
-  const ethProv = typeof ethereumProvider === 'string' ? ethereumProvider : ethereumProvider as ExternalProvider;
-  const client = new Web3ApiClient({
-    redirects: getRedirects( {
-      ipfs: ipfsProvider,
-      ens: ensProvider,
-      ethereum: ethProv
-    })
-  });
+extendEnvironment((hre) => {
+  // instantiate client
+  const redirects: UriRedirect[] = [
+    {
+      from: "ens/ethereum.web3api.eth",
+      to: ethereumPlugin(hre.config.web3api.ethereum),
+    },
+    {
+      from: "w3://ens/ipfs.web3api.eth",
+      to: ipfsPlugin(hre.config.web3api.ipfs),
+    },
+    {
+      from: "w3://ens/ens.web3api.eth",
+      to: ensPlugin(hre.config.web3api.ens),
+    },
+  ];
 
+  const client = new Web3ApiClient({ redirects });
   // extend hre
   hre.web3api = {
-    providers: {
-      ipfs: ipfsProvider,
-      ethereum: ethereumProvider,
-      ens: ensProvider
-    },
-    client: client,
-    buildAndDeploy: buildAndDeployApi,
-    runCLI: runCLI,
+    client,
+    buildAndDeployToIpfs,
+    runCLI,
   };
 });

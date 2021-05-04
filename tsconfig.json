@@ -16,7 +16,12 @@
     "rootDirs": ["./src", "./test"],
     "esModuleInterop": true
   },
-  "exclude": ["dist", "node_modules"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "exclude",
+    "./test/fixture-projects/hardhat-project/simple-storage/**/*"
+  ],
   "include": [
     "./test",
     "./src"
