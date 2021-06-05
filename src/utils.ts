@@ -7,14 +7,7 @@ export async function buildAndDeployToIpfs(
 ): Promise<string> {
   // build & deploy the protocol
   const { exitCode, stdout, stderr } = await runCLI({
-    args: [
-      "build",
-      `${apiAbsPath}/web3api.yaml`,
-      "--output-dir",
-      `${apiAbsPath}/build`,
-      "--ipfs",
-      ipfsProvider,
-    ],
+    args: ["build", `${apiAbsPath}/web3api.yaml`, "--ipfs", ipfsProvider],
     cwd,
   });
 

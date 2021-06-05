@@ -20,7 +20,7 @@
     "dist",
     "node_modules",
     "exclude",
-    "./test/fixture-projects/hardhat-project/simple-storage/**/*"
+    "./test/fixture-projects/simple-storage-project/web3api/**/*"
   ],
   "include": [
     "./test",

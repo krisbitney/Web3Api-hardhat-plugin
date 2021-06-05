@@ -29,7 +29,7 @@ async function handlePluginTask(
   hre: HardhatRuntimeEnvironment,
   runSuper: RunSuperFunction<TaskArguments>
 ) {
-  // TODO: run a local ipfs/ens node here
+  // TODO: run a local ipfs/ens node here once modular test env is ready
   return runSuper();
 }
 
@@ -51,7 +51,7 @@ extendConfig(
 
 extendEnvironment((hre) => {
   // instantiate client
-  const redirects: UriRedirect[] = [
+  const redirects: UriRedirect[] = hre.config.web3api.redirects ?? [
     {
       from: "ens/ethereum.web3api.eth",
       to: ethereumPlugin(hre.config.web3api.ethereum),

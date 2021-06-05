@@ -17,7 +17,7 @@
     "lint:fix": "prettier --write 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' && tslint --fix --config tslint.json --project tsconfig.json",
     "lint": "tslint --config tslint.json --project tsconfig.json",
     "test": "mocha --exit --recursive 'test/**/*.test.ts'",
-    "build": "tsc && tsc test/fixture-projects/hardhat-project/scripts/*.ts",
+    "build": "tsc && tsc test/fixture-projects/simple-storage-project/scripts/*.ts",
     "watch": "tsc -w"
   },
   "files": [
@@ -27,14 +27,14 @@
     "README.md"
   ],
   "dependencies": {
-    "@web3api/client-js": "0.0.1-prealpha.21",
-    "@web3api/test-env-js": "0.0.1-prealpha.21",
-    "@web3api/ens-plugin-js": "0.0.1-prealpha.21",
-    "@web3api/ethereum-plugin-js": "0.0.1-prealpha.21",
-    "@web3api/ipfs-plugin-js": "0.0.1-prealpha.21"
+    "@web3api/client-js": "0.0.1-prealpha.25",
+    "@web3api/test-env-js": "0.0.1-prealpha.25",
+    "@web3api/ens-plugin-js": "0.0.1-prealpha.25",
+    "@web3api/ethereum-plugin-js": "0.0.1-prealpha.25",
+    "@web3api/ipfs-plugin-js": "0.0.1-prealpha.25"
   },
   "devDependencies": {
-    "@web3api/cli": "0.0.1-prealpha.21",
+    "@web3api/cli": "0.0.1-prealpha.25",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.4",
     "@types/mocha": "^5.2.6",
@@ -48,7 +48,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^4.0.3",
-    "@web3api/wasm-as": "0.0.1-prealpha.21"
+    "@web3api/wasm-as": "0.0.1-prealpha.25"
   },
   "peerDependencies": {
     "hardhat": "^2.0.0"

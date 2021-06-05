@@ -20,7 +20,7 @@ interface Currency {
 }
 
 async function main() {
-  const ipfsUri = "ipfs/QmRQuz7KDtRAYXyZo7GMXedJkrAT2uUTE1isJCEZ5Wz9T3";
+  const ipfsUri = "ipfs/QmYtTXhitrwXbXvMwPmYmGQmz7gxxG6ZdFJwYZ6oy9UCtB";
   // @ts-ignore
   const client = hre.web3api.client;
 
@@ -29,13 +29,13 @@ async function main() {
   }>({
     uri: ipfsUri,
     query: `
-          query {
-            fetchTokenData(
-              chainId: $chainId
-              address: $address
-            )
-          }
-        `,
+      query {
+        fetchTokenData(
+          chainId: $chainId
+          address: $address
+        )
+      }
+    `,
     variables: {
       chainId: ChainId.MAINNET,
       address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
@@ -45,10 +45,9 @@ async function main() {
     tokenData.errors.forEach((e) => console.log(e));
   }
 
-  expect(tokenData.errors).to.eq(false);
-  expect(tokenData.data).to.eq(true);
-  expect(tokenData.data?.fetchTokenData.currency.symbol).to.eq("AAVE");
-  expect(tokenData.data?.fetchTokenData.currency.decimals).to.eq(18);
+  expect(tokenData.errors).to.eq(undefined);
+  expect(tokenData.data?.fetchTokenData?.currency?.symbol).to.eq("AAVE");
+  expect(tokenData.data?.fetchTokenData?.currency?.decimals).to.eq(18);
 }
 
 main()

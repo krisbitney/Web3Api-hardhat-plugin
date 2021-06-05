@@ -5,7 +5,7 @@ import { useEnvironment } from "./helpers";
 
 describe("Integration tests", function () {
   describe("HRE and config extension", function () {
-    useEnvironment("hardhat-project");
+    useEnvironment("simple-storage-project");
 
     it("has web3api config", async function () {
       const { ethereum, ipfs } = this.hre.config.web3api;
@@ -25,7 +25,7 @@ describe("Integration tests", function () {
   });
 
   describe("e2e", function () {
-    useEnvironment("hardhat-project");
+    useEnvironment("simple-storage-project");
 
     it("Should run Hardhat RUN task 'simple-storage.js'", async function () {
       await this.hre.run("run", {

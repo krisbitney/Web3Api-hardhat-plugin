@@ -9,7 +9,6 @@ const config: HardhatUserConfig = {
       chainId: 1,
       forking: {
         url: "https://mainnet.infura.io/v3/d119148113c047ca90f0311ed729c466",
-        blockNumber: 12200882, // April 8, 2021 at 1:48pm CST
         enabled: true,
       },
     },
@@ -17,15 +16,15 @@ const config: HardhatUserConfig = {
   web3api: {
     ipfs: {
       provider: "http://127.0.0.1:45005",
-      fallbackProviders: ["https://dweb.link"],
+      fallbackProviders: ["https://ipfs.io"],
     },
     ethereum: {
       networks: {
-        mainnet: {
+        MAINNET: {
           provider: "http://localhost:8545",
         },
       },
-      defaultNetwork: "mainnet",
+      defaultNetwork: "MAINNET",
     },
   },
 };

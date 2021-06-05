@@ -4,7 +4,8 @@ import * as path from "path";
 
 async function main() {
   // deploy api
-  const apiPath = path.resolve(__dirname, "../simple_storage");
+  const apiPath = path.resolve(__dirname, "../web3api");
+  console.log(apiPath);
   // @ts-ignore
   const ipfsCid: string = await hre.web3api.buildAndDeployToIpfs(
     apiPath,
@@ -30,8 +31,8 @@ async function main() {
     deploy.errors.forEach((e) => console.log(e));
   }
 
-  expect(deploy.errors).to.eq(false);
-  expect(deploy.data).to.eq(true);
+  expect(deploy.errors).to.eq(undefined);
+  expect(deploy.data).to.not.eq(undefined);
   expect(deploy.data?.deployContract.indexOf("0x")).to.be.gt(-1);
 
   if (!deploy.data) {
@@ -56,8 +57,8 @@ async function main() {
     },
   });
 
-  expect(set.errors).to.eq(false);
-  expect(set.data).to.eq(true);
+  expect(set.errors).to.eq(undefined);
+  expect(set.data).to.not.eq(undefined);
   expect(set.data?.setData.indexOf("0x")).to.be.gt(-1);
 
   const get = await client.query<{
@@ -81,8 +82,8 @@ async function main() {
         `,
   });
 
-  expect(get.errors).to.eq(false);
-  expect(get.data).to.eq(true);
+  expect(get.errors).to.eq(undefined);
+  expect(get.data).to.not.eq(undefined);
   expect(get.data?.getData).to.eq(55);
   expect(get.data?.secondGetData).to.eq(55);
   expect(get.data?.thirdGetData).to.eq(55);
