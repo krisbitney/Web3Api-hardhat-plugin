@@ -1,23 +1,7 @@
 import { expect } from "chai";
 import * as hre from "hardhat";
 
-enum ChainId {
-  MAINNET = "MAINNET",
-  ROPSTEN = "ROPSTEN",
-  RINKEBY = "RINKEBY",
-  GOERLI = "GOERLI",
-  KOVAN = "KOVAN",
-}
-interface Token {
-  chainId: ChainId;
-  address: string;
-  currency: Currency;
-}
-interface Currency {
-  decimals: number;
-  symbol: string | null;
-  name: string | null;
-}
+import { ChainId, Token } from "../../../types";
 
 async function main() {
   const ipfsUri = "ipfs/QmYtTXhitrwXbXvMwPmYmGQmz7gxxG6ZdFJwYZ6oy9UCtB";

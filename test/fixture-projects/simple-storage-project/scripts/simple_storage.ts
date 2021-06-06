@@ -22,10 +22,10 @@ async function main() {
   }>({
     uri: ipfsUri,
     query: `
-          mutation {
-            deployContract
-          }
-        `,
+      mutation {
+        deployContract
+      }
+    `,
   });
   if (deploy.errors) {
     deploy.errors.forEach((e) => console.log(e));
@@ -45,13 +45,13 @@ async function main() {
   }>({
     uri: ipfsUri,
     query: `
-          mutation {
-            setData(
-              address: "${address}"
-              value: $value
-            )
-          }
-        `,
+      mutation {
+        setData(
+          address: "${address}"
+          value: $value
+        )
+      }
+    `,
     variables: {
       value: 55,
     },
@@ -68,18 +68,18 @@ async function main() {
   }>({
     uri: ipfsUri,
     query: `
-          query {
-            getData(
-              address: "${address}"
-            )
-            secondGetData: getData(
-              address: "${address}"
-            )
-            thirdGetData: getData(
-              address: "${address}"
-            )
-          }
-        `,
+      query {
+        getData(
+          address: "${address}"
+        )
+        secondGetData: getData(
+          address: "${address}"
+        )
+        thirdGetData: getData(
+          address: "${address}"
+        )
+      }
+    `,
   });
 
   expect(get.errors).to.eq(undefined);

@@ -13,7 +13,7 @@ import {
   TaskArguments,
 } from "hardhat/types";
 
-import { defaultWeb3ApiConfig, Web3ApiConfig } from "./config";
+import { defaultWeb3ApiConfig } from "./config";
 import "./typeExtensions";
 import { buildAndDeployToIpfs } from "./utils";
 
@@ -36,16 +36,10 @@ async function handlePluginTask(
 // client options and general web3api config
 extendConfig(
   (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
-    const defaultClientConfig: Web3ApiConfig = defaultWeb3ApiConfig;
-    if (userConfig.web3api) {
-      config.web3api = {
-        ipfs: userConfig.web3api.ipfs ?? defaultClientConfig.ipfs,
-        ens: userConfig.web3api.ens ?? defaultClientConfig.ens,
-        ethereum: userConfig.web3api.ethereum ?? defaultClientConfig.ethereum,
-      };
-    } else {
-      config.web3api = defaultClientConfig;
-    }
+    config.web3api = {
+      ...defaultWeb3ApiConfig,
+      ...userConfig.web3api,
+    };
   }
 );
 
